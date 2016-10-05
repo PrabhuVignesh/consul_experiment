@@ -1,0 +1,15 @@
+---
+- hosts: all
+  sudo: yes
+  roles:
+    - prabhuvignesh.consul_installer
+
+- hosts: dbservers
+  sudo: yes
+
+  task:
+  	- name: Creation of configuration file
+  	  file: path=/etc/consul.d/db.json state=touch
+
+  	- name: Placing configuration file into the consul.d
+  	  action: template src=hooks/prereceive.j2 dest={{ git_repository_path }}/hooks/pre-receive owner=git mode=0755

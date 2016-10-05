@@ -1,0 +1,11 @@
+[webservers]
+172.28.128.15
+
+[dbservers]
+172.28.128.16
+
+[cacheservers]
+172.28.128.17
+
+[others]
+172.28.128.17
