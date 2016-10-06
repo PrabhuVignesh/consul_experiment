@@ -4,6 +4,13 @@
   roles:
     - PrabhuVignesh.consul_installer
 
+- hosts: all
+  sudo: yes
+
+  tasks:
+  - name: Joining consul each other
+    action: template src=template/consul.d/google.j2 dest=/etc/consul.d/ping.json mode=0777
+
 - hosts: dbservers
   sudo: yes
 
@@ -17,7 +24,7 @@
   - name: Starting consul agent in background process
     command: nohup /tmp/agentrun.sh
     async: 9999999999999
-    poll: 0
+    poll: 0 
 
 - hosts: webservers
   sudo: yes
@@ -48,3 +55,14 @@
     command: nohup /tmp/agentrun.sh
     async: 9999999999999
     poll: 0
+
+- hosts: all
+  sudo: yes
+
+  tasks:
+  - name: Joining consul each other
+    command: consul join {{ item }}
+    with_items: groups['all']
+
+
+
