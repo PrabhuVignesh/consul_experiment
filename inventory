@@ -1,6 +1,5 @@
 [webservers]
 172.28.128.15
-
 [dbservers]
 172.28.128.16
 
@@ -9,3 +8,9 @@
 
 [others]
 172.28.128.17
+
+[all:vars]
+ansible_connection=ssh
+ansible_ssh_user=vagrant
+ansible_ssh_pass=vagrant 
+host_key_checking=False

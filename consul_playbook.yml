@@ -2,14 +2,49 @@
 - hosts: all
   sudo: yes
   roles:
-    - prabhuvignesh.consul_installer
+    - PrabhuVignesh.consul_installer
 
 - hosts: dbservers
   sudo: yes
 
-  task:
-  	- name: Creation of configuration file
-  	  file: path=/etc/consul.d/db.json state=touch
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/adaptdb.j2 dest=/etc/consul.d/db.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
 
-  	- name: Placing configuration file into the consul.d
-  	  action: template src=hooks/prereceive.j2 dest={{ git_repository_path }}/hooks/pre-receive owner=git mode=0755
+  - name: Starting consul agent in background process
+    command: nohup /tmp/agentrun.sh
+    async: 9999999999999
+    poll: 0
+
+- hosts: webservers
+  sudo: yes
+
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/adaptweb.j2 dest=/etc/consul.d/web.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+  - name: Starting consul agent in background process
+    command: nohup /tmp/agentrun.sh
+    async: 9999999999999
+    poll: 0
+
+- hosts: cacheservers
+  sudo: yes
+
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/adaptcache.j2 dest=/etc/consul.d/cache.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+  - name: Starting consul agent in background process
+    command: nohup /tmp/agentrun.sh
+    async: 9999999999999
+    poll: 0

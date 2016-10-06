@@ -1,0 +1,12 @@
+---
+name_for_db: test_db
+tag_for_db: test_db_tag
+port_for_db: 80
+
+name_for_web: test_web
+tag_for_web: test_web_tag
+port_for_web: 80
+
+name_for_cacheservers: test_cacheservers
+tag_for_cacheservers: test_cacheservers_tag
+port_for_cacheservers: 80
