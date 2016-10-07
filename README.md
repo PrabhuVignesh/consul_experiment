@@ -3,6 +3,7 @@
 Consul is a cluster management tool from Hashicorp and it is very much useful for advanced micro-services architecture. Consul is a distributed configuration system which provides high availability, multi-data center, service discovery and High fault tolerance. So managing micro-services with console is pretty easy and simple.
 
 This playbook has a script for sample microservice environment provisined with vagrant.
+## Installation:
 
 1. Install Vagrant
 2. Clone this repo and `cd consul_experiment` and run `vagrant up`
