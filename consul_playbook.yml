@@ -4,12 +4,7 @@
   roles:
     - PrabhuVignesh.consul_installer
 
-- hosts: all
-  sudo: yes
 
-  tasks:
-  - name: Joining consul each other
-    action: template src=template/consul.d/google.j2 dest=/etc/consul.d/ping.json mode=0777
 
 - hosts: dbservers
   sudo: yes
@@ -21,25 +16,18 @@
   - name: creating script file
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
 
-  - name: Starting consul agent in background process
-    command: nohup /tmp/agentrun.sh
-    async: 9999999999999
-    poll: 0 
-
 - hosts: webservers
   sudo: yes
 
   tasks:
   - name: Placing configuration file into the consul.d
     action: template src=template/consul.d/adaptweb.j2 dest=/etc/consul.d/web.json mode=0755
- 
+  
+  - name: Installing real nginx
+    apt: name=nginx state=present
+
   - name: creating script file
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
-
-  - name: Starting consul agent in background process
-    command: nohup /tmp/agentrun.sh
-    async: 9999999999999
-    poll: 0
 
 - hosts: cacheservers
   sudo: yes
@@ -51,18 +39,55 @@
   - name: creating script file
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
 
-  - name: Starting consul agent in background process
-    command: nohup /tmp/agentrun.sh
+
+
+
+- hosts: servers
+  sudo: yes
+ 
+  tasks:
+
+  - name: creating script file for servers
+    action: template src=template/scripts/serverrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+  - name: consul agent -server -data-dir /tmp/consul -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
+    command: consul agent -server -data-dir /tmp/consul -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
     async: 9999999999999
     poll: 0
 
-- hosts: all
+- hosts: servers
   sudo: yes
-
   tasks:
-  - name: Joining consul each other
+  - name: join all servers togather
     command: consul join {{ item }}
-    with_items: groups['all']
+    with_items: groups['servers']
+
+- hosts: clients
+  sudo: yes
+  tasks:
+  - name: Downloading consul UI from official repo .
+    get_url: url=https://releases.hashicorp.com/consul/0.7.0/consul_0.7.0_web_ui.zip dest=/tmp/ui.zip mode=0777
+
+  - name: extract to /tmp/ .
+    command: unzip /tmp/ui.zip -d /tmp/
+    async: 1
+
+  - name: assigning permission for temp
+    file:
+      path: /tmp/      
+      mode: 0777
+      recurse: yes
+
+  - name: delete the zip file
+    file: path=/tmp/ui.zip state=absent
+
+  - name: Starting consul servers in background process
+    command: consul agent -data-dir /tmp/consul -client {{ inventory_hostname }} -ui-dir /tmp -join {{ item }} -bind={{ inventory_hostname }}
+    async: 9999999999999
+    poll: 0
+    with_items: groups['servers']
+
+
 
 
 

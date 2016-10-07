@@ -9,6 +9,13 @@
 [others]
 172.28.128.17
 
+[servers]
+172.28.128.15
+172.28.128.16
+
+[clients]
+172.28.128.17
+
 [all:vars]
 ansible_connection=ssh
 ansible_ssh_user=vagrant
