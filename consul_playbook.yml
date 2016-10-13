@@ -40,7 +40,18 @@
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
 
 
+- hosts: bootstraping
+  sudo: yes
+ 
+  tasks:
 
+  - name: creating script file for bootstrap
+    action: template src=template/scripts/serverrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+  - name: consul agent -server -data-dir /tmp/consul -bootstrap 
+    command: consul agent -server -data-dir /tmp/consul -bootstrap -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
+    async: 9999999999999
+    poll: 0
 
 - hosts: servers
   sudo: yes
@@ -50,25 +61,13 @@
   - name: creating script file for servers
     action: template src=template/scripts/serverrun.j2 dest=/tmp/agentrun.sh mode=0777
 
-  - name: consul agent -server -data-dir /tmp/consul -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
+  - name: consul agent -server -data-dir /tmp/consul
     command: consul agent -server -data-dir /tmp/consul -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
     async: 9999999999999
     poll: 0
 
-- hosts: bootstraping
-  sudo: yes
- 
-  tasks:
 
-  - name: creating script file for bootstrap
-    action: template src=template/scripts/serverrun.j2 dest=/tmp/agentrun.sh mode=0777
-
-  - name: consul agent -server -data-dir /tmp/consul -bootstrap -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
-    command: consul agent -server -data-dir /tmp/consul -node={{ inventory_hostname }} -bind={{ inventory_hostname }}
-    async: 9999999999999
-    poll: 0
-    
-
+  
 - hosts: servers
   sudo: yes
   tasks:
