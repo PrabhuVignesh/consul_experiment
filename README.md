@@ -12,4 +12,4 @@ This playbook has a script for sample microservice environment provisined with v
 
 go to your browser and type http://172.28.128.14:8500/ui to see dashboard of consul client
 
-**Please follow the article(Comming soon...) for more detail**
+**Please follow the article(http://devopscube.com/consul-service-discovery-beginners-guide/) for more detail**
