@@ -4,8 +4,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
-
-
+  config.vm.box_check_update = false
+  
   config.vm.define "n1" do |n1|
       n1.vm.hostname = "n1"
       n1.vm.network "private_network", ip: "172.28.128.10"
