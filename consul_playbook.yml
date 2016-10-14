@@ -11,7 +11,7 @@
 
   tasks:
   - name: Placing configuration file into the consul.d
-    action: template src=template/consul.d/adaptdb.j2 dest=/etc/consul.d/db.json mode=0755
+    action: template src=template/consul.d/bootstrap.j2 dest=/etc/consul.d/bootstrap.json mode=0755
  
   - name: creating script file
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
