@@ -5,6 +5,38 @@
     - PrabhuVignesh.consul_installer
 
 
+- hosts: bootstraping
+  sudo: yes
+
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/bootstrap.j2 dest=/etc/consul.d/bootstrap.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+- hosts: servers
+  sudo: yes
+
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/server.j2 dest=/etc/consul.d/server.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+- hosts: clients
+  sudo: yes
+
+  tasks:
+  - name: Placing configuration file into the consul.d
+    action: template src=template/consul.d/client.j2 dest=/etc/consul.d/client.json mode=0755
+ 
+  - name: creating script file
+    action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+
+
 
 - hosts: dbservers
   sudo: yes
@@ -15,6 +47,9 @@
  
   - name: creating script file
     action: template src=template/scripts/agentrun.j2 dest=/tmp/agentrun.sh mode=0777
+
+
+
 
 - hosts: webservers
   sudo: yes
